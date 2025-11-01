@@ -85,7 +85,7 @@ if [[ ! -f "$INSTALLER_PATH"/expoc.py ]]; then
 fi
 
 if ! [[ -f "/opt/ExpoC/expoc.py" ]] ; then
-	sudo rsync -av "$INSTALLER_PATH/" "/opt/ExpoC/"
+	sudo rsync -aq "$INSTALLER_PATH/" "/opt/ExpoC/"
 fi
 
 

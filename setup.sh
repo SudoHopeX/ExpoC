@@ -1,33 +1,50 @@
 #!/bin/bash
-trap "kill $SPIN_PID 2>/dev/null" EXIT
+trap 'kill $SPIN_PID 2>/dev/null' EXIT
 
-TARGET_HOME=$(eval echo ~$(logname))
+# Get home directory safely
+TARGET_HOME=$(getent passwd $(logname) | cut -d: -f6)
+
+# Define color variables
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[1;34m'
+CYAN='\e[1;36m'
+RESET='\e[0m'  # Reset to default
+
 
 # Spinner function
 spin() {
-
-  local msg="$1"
-  local -a marks=( '-' '\' '|' '/' )
-  while :; do
-    for mark in "${marks[@]}"; do
-      printf "\r\e[1;32m[+] $msg...\e[0m %s" "$mark"
-      sleep 0.1
+    [[ -t 1 ]] || return 0  # Only spin if terminal
+    local msg="$1"
+    local -a marks=( '-' '\' '|' '/' )
+    while :; do
+        for mark in "${marks[@]}"; do
+            printf "\r${GREEN}[+] $msg...${RESET} %s" "$mark"
+            sleep 0.1
+        done
     done
-  done
 }
 
 # Spinner starter (background-safe)
 start_spinner() {
-  spin "$1" &
-  SPIN_PID=$!
+    stop_spinner 2>/dev/null  # Ensure no previous spinner
+    spin "$1" &
+    SPIN_PID=$!
+    # Validate process exists
+    kill -0 $SPIN_PID 2>/dev/null || unset SPIN_PID
 }
 
 # Spinner stopper (safe kill)
 stop_spinner() {
-  kill $SPIN_PID 2>/dev/null
-  wait $SPIN_PID 2>/dev/null
-  echo -e "\r\e[1;32m[✓] $1 complete! \e[0m"
+    if [[ -n "$SPIN_PID" ]]; then
+        kill $SPIN_PID 2>/dev/null
+        wait $SPIN_PID 2>/dev/null
+    fi
+    printf '\r\e[K'  # Clear entire line
+    echo -e "${GREEN}[✓] $1 complete! ${RESET}"
 }
+
 
 # installing dependencies if not found on system
 install_if_missing() {
@@ -40,13 +57,16 @@ install_if_missing() {
                 stop_spinner "$pkg Installation"
 
         else
-                echo  -e "\e[33m$pkg Installation found...\e[0m"
+                echo  -e "${YELLOW}$pkg Installation found...${RESET}"
         fi
 }
 
 
 start_spinner "System Updating"
-sudo apt update > /dev/null 2>&1
+if ! sudo apt update > /dev/null 2>&1; then
+    echo -e "${RED}[!] Failed to update package list${RESET}" >&2
+    exit 1
+fi
 stop_spinner "System Update"
 
 install_if_missing python3
@@ -58,14 +78,26 @@ source /opt/ExpoC/bin/activate
 cd /opt/ExpoC
 
 
+INSTALLER_PATH=$(find "$TARGET_HOME" -type d -name "ExpoC" -print -quit)
+
+if [[ ! -f "$INSTALLER_PATH"/expoc.py ]]; then
+    echo -e "${RED}[!] ExpoC source not found!${RESET}" >&2
+    exit 1
+fi
+
 if ! [[ -f "/opt/ExpoC/expoc.py" ]] ; then
-  INSTALLER_PATH=$(find "$TARGET_HOME" -type d -name "ExpoC" -print -quit)
-	sudo cp -r "$INSTALLER_PATH" "/opt/ExpoC"  # Copying Installer to /opt/ dir
+	sudo rsync -av "$INSTALLER_PATH/" "/opt/ExpoC/"
 fi
 
 
 # installing python requirements
-pip install requests colorama
+start_spinner "Installing python Requirements.."
+if ! pip install requests colorama > /dev/null 2>&1; then
+    stop_spinner "Python requirements"
+    echo -e "${RED}[!] Python requirements installation failed!${RESET}"
+    exit 1
+fi
+stop_spinner "Python requirements"
 
 
 # ExpoC Binary path
@@ -73,7 +105,7 @@ BIN_PATH="/usr/local/bin/expoc"
 
 # Create launcher
 echo ""
-echo  -e "\e[34m[*] Creating launcher...\e[0m"
+echo  -e "${CYAN}[*] Creating launcher...${RESET}"
 sudo tee "$BIN_PATH" > /dev/null <<'EOF'
 #!/bin/bash
 
@@ -81,7 +113,6 @@ source /opt/ExpoC/bin/activate
 cd /opt/ExpoC/
 
 MODE="$1"
-shift
 
 case "$MODE" in
 	--update|-u)
@@ -101,11 +132,16 @@ case "$MODE" in
         ;;
 
 	*)
-	      python3 expoc.py "$@"
+	      python3 ExpoC/expoc.py "$@"
 	      ;;
+
+esac
 
 deactivate
 EOF
 
 # Make launcher executable
 sudo chmod +x "$BIN_PATH"
+
+
+echo -e "${BLUE} ExpoC Installation Succeed, COMMAND: ${YELLOW}expoc -h${RESET}"

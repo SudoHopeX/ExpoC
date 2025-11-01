@@ -28,7 +28,6 @@ spin() {
 
 # Spinner starter (background-safe)
 start_spinner() {
-    stop_spinner 2>/dev/null  # Ensure no previous spinner
     spin "$1" &
     SPIN_PID=$!
     # Validate process exists
@@ -132,7 +131,7 @@ case "$MODE" in
         ;;
 
 	*)
-	      python3 ExpoC/expoc.py "$@"
+	      python3 expoc.py "$@"
 	      ;;
 
 esac

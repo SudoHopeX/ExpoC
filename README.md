@@ -5,7 +5,7 @@
     |    ___  \>    < | |_> >  <_> )     \____
     /_______  /__/\_ \|   __/ \____/ \______  /
             \/      \/|__|    ~ SudoHopeX   \/
-    ExpoC v0.1 - Exposed Config & Log Scanner by SudoHopeX
+    ExpoC v0.2 - Exposed Config & Log Scanner by SudoHopeX
 ```
 
 A lightweight Python tool to scan subdomains for exposed sensitive files like `.env`, `.htaccess`, `config.json`, and more.
@@ -16,6 +16,10 @@ A lightweight Python tool to scan subdomains for exposed sensitive files like `.
 - Multithreaded for fast scanning
 - Color-coded output for clear results
 - No complex setup — just run and scan
+- 403 bypass techniques:
+   - Headers with that same url as Referer (auto used)
+   - http/https schema switching (manual, default=http)
+   - path case manipulation (auto used)
 
 ## 📦 Requirements
 - Python 3.6+
@@ -36,6 +40,26 @@ sudo bash setup.sh
 ```
 
 ## 🛠 Usage
+```
+usage: ExpoC [-h] [-s [SUBDOMAIN]] [-f [SUBDOMAINS_FILE]] [-mt [MAX_THREADS]]
+             [-r] [--use-https]
+
+Check for exposed config or log files on subdomain(s).
+
+options:
+  -h, --help            show this help message and exit
+  -s, --subdomain [SUBDOMAIN]
+                        a single subdomain or domain
+  -f, --subdomains-file [SUBDOMAINS_FILE]
+                        Path to file containing list of subdomains (one per
+                        line)
+  -mt, --max-threads [MAX_THREADS]
+                        Limit number of maximum threads
+  -r, --save-results    log all results to a text file
+  --use-https           Use HTTPS for requests (default is HTTP)
+```
+
+## Usages Examples
 ```zsh
 # see usage
 expoc --help
@@ -51,6 +75,9 @@ expoc -f subdomains.txt -mt 50
 
 # Save results to a text file
 expoc -r -f subdomains.txt
+
+# use https instead of http
+expoc -s example.com --use-https
 
 # Update or Check for Update
 expoc --update
@@ -75,4 +102,5 @@ Use only on systems you have explicit authorization to test. Scanning without pe
 Licensed under MIT. check [LICENSE](LICENSE) for more details
 
 --- 
+
 ![Developed with Lov3 by SudoHopeX](https://hope.is-a.dev/img/made-with-love-by-sudohopex.png)

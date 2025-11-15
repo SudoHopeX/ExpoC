@@ -130,9 +130,9 @@ case "$MODE" in
             echo "[✓] Already up to date."
         fi
         ;;
-  --fetch|f)
-        fetch_n_check_files_4_info.py "$@"
-        ;;
+  # --fetch|f)
+  #       fetch_n_check_files_4_info.py "$@"
+  #       ;;
 	*)
 	      python3 ExpoC/expoc.py "$@"
 	      ;;

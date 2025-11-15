@@ -315,7 +315,7 @@ def smart_case_variants(path: str):
     Generate 7 smart case variants excluding original and lowercase.
     Preserve leading slash if present and operate on core path.
     """
-    if not path or not any(c.isalpha() for c in path):
+    if not path or not all(c.isalnum() or c in '/-._~' for c in path):
         return [path]
 
     # Preserve leading slash
@@ -353,7 +353,7 @@ def case_manipulated_403_bypass(save_result):
         subdomain_urls.add(url)
         if any(c.isalpha() for c in file_path):
             case_manipulated_paths.extend(smart_case_variants(file_path))
-
+            
     if subdomain_urls:
         execute_tasks(save_result=save_result,
                       files=case_manipulated_paths,
@@ -363,10 +363,25 @@ def case_manipulated_403_bypass(save_result):
     FILES_FOUND_403 = _files_found_403_copy  # restore original list after attempt
 
 
+FILE_NAME = None
+def save_200_url(file_url: str,
+                 ):
+    """
+    Save the Url's with response 200 in FILE_NAME for further exposure checkup
+    """
+    global FILE_NAME
+    if not FILE_NAME:
+        FILE_NAME = f"results_200_{str(datetime.datetime.now().strftime(format="%d-%b-%Y_%I-%M%p"))}.txt"
+
+    with open(FILE_NAME, 'w') as file:
+        file.write(file_url)
+
+
 def save_result_to_logfile(save_result: bool, url, status_code):
     """
     Saving Results to a text file in format expoc_subdomain_results.txt if required by user.
     """
+    if status_code == 200: save_200_url(url)
     if not save_result:
         return
 

@@ -20,6 +20,7 @@ A lightweight Python tool to scan subdomains for exposed sensitive files like `.
    - Headers with that same url as Referer (auto used)
    - http/https schema switching (manual, default=http)
    - path case manipulation (auto used)
+- Save all 200 response urls to `results_200_<datetime>.txt` for further analysis.
 
 ## 📦 Requirements
 - Python 3.6+
@@ -42,7 +43,7 @@ sudo bash setup.sh
 ## 🛠 Usage
 ```
 usage: ExpoC [-h] [-s [SUBDOMAIN]] [-f [SUBDOMAINS_FILE]] [-mt [MAX_THREADS]]
-             [-r] [--use-https]
+             [-r] [--use-https] [--update]
 
 Check for exposed config or log files on subdomain(s).
 
@@ -57,6 +58,7 @@ options:
                         Limit number of maximum threads
   -r, --save-results    log all results to a text file
   --use-https           Use HTTPS for requests (default is HTTP)
+  --update              update the tool for any upgrades
 ```
 
 ## Usages Examples
@@ -104,3 +106,4 @@ Licensed under MIT. check [LICENSE](LICENSE) for more details
 --- 
 
 ![Developed with Lov3 by SudoHopeX](https://hope.is-a.dev/img/made-with-love-by-sudohopex.png)
+

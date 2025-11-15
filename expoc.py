@@ -497,7 +497,8 @@ def main(args):
     global USE_HTTPS
     USE_HTTPS = args.use_https
 
-    print(f"{Fore.CYAN}[*] Scanning {len(subdomains)} subdomain(s) for {len(FILES)} Credential Files...{Style.RESET_ALL}")
+    print(f"\n{Fore.CYAN}[*] Scanning {len(subdomains)} subdomain(s) for {len(FILES)} Credential Files...{Style.RESET_ALL}")
+    print(f"\n{Fore.CYAN}[*] Approximate number of Requests to be made: {len(subdomains) * len(files)} {Style.RESET_ALL}")
 
     execute_tasks(save_result=save_result, subdomains=subdomains, files=FILES)
 
@@ -533,4 +534,5 @@ if __name__ == "__main__":
     parser.add_argument("--u", "--update" , nargs="?", help="Update tool for upgrades (to be used with launcher only)")
     arguments = parser.parse_args()
     main(arguments)
+
 

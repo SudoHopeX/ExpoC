@@ -28,6 +28,7 @@ spin() {
 
 # Spinner starter (background-safe)
 start_spinner() {
+    stop_spinner 2>/dev/null  # Ensure no previous spinner
     spin "$1" &
     SPIN_PID=$!
     # Validate process exists
@@ -85,7 +86,7 @@ if [[ ! -f "$INSTALLER_PATH"/expoc.py ]]; then
 fi
 
 if ! [[ -f "/opt/ExpoC/expoc.py" ]] ; then
-	sudo rsync -aq "$INSTALLER_PATH/" "/opt/ExpoC/"
+	sudo rsync -av "$INSTALLER_PATH/" "/opt/ExpoC/"
 fi
 
 
@@ -129,9 +130,11 @@ case "$MODE" in
             echo "[✓] Already up to date."
         fi
         ;;
-
+  --fetch|f)
+        fetch_n_check_files_4_info.py "$@"
+        ;;
 	*)
-	      python3 expoc.py "$@"
+	      python3 ExpoC/expoc.py "$@"
 	      ;;
 
 esac

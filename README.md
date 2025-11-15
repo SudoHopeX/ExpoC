@@ -58,7 +58,8 @@ options:
                         Limit number of maximum threads
   -r, --save-results    log all results to a text file
   --use-https           Use HTTPS for requests (default is HTTP)
-  --update              update the tool for any upgrades
+  -u --update [UPDATE]
+                        Update the tool for any upgrades
 ```
 
 ## Usages Examples
@@ -106,4 +107,5 @@ Licensed under MIT. check [LICENSE](LICENSE) for more details
 --- 
 
 ![Developed with Lov3 by SudoHopeX](https://hope.is-a.dev/img/made-with-love-by-sudohopex.png)
+
 

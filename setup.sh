@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# SudoHopeX
+# Expoc v0.3 
+
 trap 'kill $SPIN_PID 2>/dev/null' EXIT
 
 # Get home directory safely
@@ -28,7 +32,6 @@ spin() {
 
 # Spinner starter (background-safe)
 start_spinner() {
-    stop_spinner 2>/dev/null  # Ensure no previous spinner
     spin "$1" &
     SPIN_PID=$!
     # Validate process exists
@@ -86,7 +89,7 @@ if [[ ! -f "$INSTALLER_PATH"/expoc.py ]]; then
 fi
 
 if ! [[ -f "/opt/ExpoC/expoc.py" ]] ; then
-	sudo rsync -av "$INSTALLER_PATH/" "/opt/ExpoC/"
+        sudo rsync -av "$INSTALLER_PATH/" "/opt/ExpoC/"
 fi
 
 
@@ -115,27 +118,38 @@ cd /opt/ExpoC/
 MODE="$1"
 
 case "$MODE" in
-	--update|-u)
-        echo "[*] Checking for updates..."
-        git fetch origin
-        LOCAL=$(git rev-parse HEAD)
-        REMOTE=$(git rev-parse origin/main)
+        --update|-u)
+                echo "[*] Checking for updates..."
+                git fetch origin
+                LOCAL=$(git rev-parse HEAD)
+                REMOTE=$(git rev-parse origin/main)
 
-        if [ "$LOCAL" != "$REMOTE" ]; then
-            echo "[*] Update available. Pulling latest changes..."
-            git pull origin main
-            echo "[✓] Updated successfully!"
+                if [ "$LOCAL" != "$REMOTE" ]; then
+                        echo "[*] Update available. Pulling latest changes..."
+                        git pull origin main
+                        sudo bash setup.sh # execute setup again for any upgrades
+                        echo "[✓] Updated successfully!"
 
-        else
-            echo "[✓] Already up to date."
-        fi
-        ;;
-  # --fetch|f)
-  #       fetch_n_check_files_4_info.py "$@"
-  #       ;;
-	*)
-	      python3 ExpoC/expoc.py "$@"
-	      ;;
+                else
+                        echo "[✓] Already up to date."
+                fi
+                ;;
+
+        --open-200-urls)
+                # open 200 urls in browser from resulted files
+
+                # check if filepath provided or not
+                if [ "$#" -ge 2 ]; then
+                        links-opener.sh "$2"
+                else
+                        echo "[!] No File specified to open"
+                        echo "[^] Use: expoc --open-200-urls <filepath>"
+                fi
+                ;;
+
+        *)
+              python3 expoc.py "$@"
+              ;;
 
 esac
 
@@ -144,6 +158,4 @@ EOF
 
 # Make launcher executable
 sudo chmod +x "$BIN_PATH"
-
-
 echo -e "${BLUE} ExpoC Installation Succeed, COMMAND: ${YELLOW}expoc -h${RESET}"

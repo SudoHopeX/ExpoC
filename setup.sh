@@ -140,7 +140,7 @@ case "$MODE" in
 
                 # check if filepath provided or not
                 if [ "$#" -ge 2 ]; then
-                        links-opener.sh "$2"
+                        bash links-opener.sh "$2"
                 else
                         echo "[!] No File specified to open"
                         echo "[^] Use: expoc --open-200-urls <filepath>"

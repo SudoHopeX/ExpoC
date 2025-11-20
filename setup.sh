@@ -135,9 +135,6 @@ case "$MODE" in
                 fi
                 ;;
 
-    git reset --hard origin/main  # Overwrites local changes
-    sudo bash setup.sh            # Run setup for upgrades
-
         --open-200-urls)
                 # open 200 urls in browser from resulted files
 

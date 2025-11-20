@@ -126,14 +126,17 @@ case "$MODE" in
 
                 if [ "$LOCAL" != "$REMOTE" ]; then
                         echo "[*] Update available. Pulling latest changes..."
-                        git pull origin main
-                        sudo bash setup.sh # execute setup again for any upgrades
+                        git reset --hard origin/main  # Overwrite local changes
+                        sudo bash setup.sh            # Run setup for upgrades
                         echo "[✓] Updated successfully!"
 
                 else
                         echo "[✓] Already up to date."
                 fi
                 ;;
+
+    git reset --hard origin/main  # Overwrites local changes
+    sudo bash setup.sh            # Run setup for upgrades
 
         --open-200-urls)
                 # open 200 urls in browser from resulted files

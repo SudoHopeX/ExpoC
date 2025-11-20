@@ -373,7 +373,7 @@ def save_200_url(file_url: str,
     if not FILE_NAME:
         FILE_NAME = f"results_200_{str(datetime.datetime.now().strftime(format="%d-%b-%Y_%I-%M%p"))}.txt"
 
-    with open(FILE_NAME, 'w') as file:
+    with open(FILE_NAME, 'a') as file:
         file.write(file_url)
 
 
@@ -534,6 +534,7 @@ if __name__ == "__main__":
     parser.add_argument("--u", "--update" , nargs="?", help="Update tool for upgrades (to be used with launcher only)")
     arguments = parser.parse_args()
     main(arguments)
+
 
 
 

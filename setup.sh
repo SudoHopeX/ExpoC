@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # SudoHopeX
-# Expoc v0.3 
+# Expoc v0.2
 
 trap 'kill $SPIN_PID 2>/dev/null' EXIT
 

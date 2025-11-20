@@ -531,10 +531,8 @@ if __name__ == "__main__":
     parser.add_argument("-mt", "--max-threads", nargs='?', help="Limit number of maximum threads")
     parser.add_argument("-r","--save-results", action='store_true', help="log all results to a text file")
     parser.add_argument("--use-https", action="store_true", help="Use HTTPS for requests (default is HTTP)")
-    parser.add_argument("--u", "--update" , nargs="?", help="Update tool for upgrades (to be used with launcher only)")
+    parser.add_argument("--u", "--update", nargs="?", help="Update tool for upgrades")  # this argument can be used via launcher only
+    parser.add_argument("--open-200-urls", nargs="?", help="Open All 200 response urls from results_200_<datetime>.txt to firefox")  # this argument can be used via launcher only
     arguments = parser.parse_args()
     main(arguments)
-
-
-
-
+    

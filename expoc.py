@@ -374,7 +374,7 @@ def save_200_url(file_url: str,
         FILE_NAME = f"results_200_{str(datetime.datetime.now().strftime(format="%d-%b-%Y_%I-%M%p"))}.txt"
 
     with open(FILE_NAME, 'a') as file:
-        file.write(file_url)
+        file.write(f"{file_url}\n")
 
 
 def save_result_to_logfile(save_result: bool, url, status_code):
@@ -536,3 +536,4 @@ if __name__ == "__main__":
     arguments = parser.parse_args()
     main(arguments)
     
+

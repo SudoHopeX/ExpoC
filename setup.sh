@@ -56,7 +56,7 @@ install_if_missing() {
         if ! dpkg -s $pkg >/dev/null 2>&1; then
 
                 start_spinner "$pkg Installing..."
-                sudo apt-get install $pkg -y > /dev/null 2>&1
+                sudo apt-get install -y $pkg > /dev/null 2>&1
                 stop_spinner "$pkg Installation"
 
         else
@@ -75,6 +75,7 @@ stop_spinner "System Update"
 install_if_missing python3
 install_if_missing python3-pip
 install_if_missing python3-venv
+install_if_missing rsync
 
 sudo python3 -m venv /opt/ExpoC
 source /opt/ExpoC/bin/activate
@@ -89,7 +90,7 @@ if [[ ! -f "$INSTALLER_PATH"/expoc.py ]]; then
 fi
 
 if ! [[ -f "/opt/ExpoC/expoc.py" ]] ; then
-        sudo rsync -av "$INSTALLER_PATH/" "/opt/ExpoC/"
+        sudo rsync -av "$INSTALLER_PATH/" "/opt/ExpoC/" > /dev/null 2>&1
 fi
 
 
